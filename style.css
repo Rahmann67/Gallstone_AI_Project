@@ -1,0 +1,76 @@
+/* Colors live in one place. Change them here and the whole site updates. */
+:root {
+  --bg: #FFFAEC;        /* page background (light cream) */
+  --card: #FFFDF6;      /* box background */
+  --text: #3A2A1E;      /* dark brown text */
+  --muted: #6E5B4B;     /* softer text */
+  --button: #EBD8AC;    /* deeper cream for buttons */
+  --border: #CDB88A;    /* tan outlines */
+  --alert-bg: #FBE4DE;
+  --alert-text: #A12B20;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 1rem/1.6 system-ui, sans-serif;
+}
+
+/* Keeps content a readable width and centered */
+.wrap, main { max-width: 44rem; margin: 0 auto; padding: 1rem 1.25rem; }
+
+.brand { font-size: 1.4rem; }
+h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; margin: 1rem 0; }
+.lead { color: var(--muted); font-size: 1.1rem; }
+
+/* The tool box */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.alert {
+  background: var(--alert-bg);
+  color: var(--alert-text);
+  border-radius: 10px;
+  padding: .7rem .9rem;
+  margin-top: 0;
+}
+
+label { display: block; font-weight: 600; margin: 1rem 0 .35rem; }
+
+textarea, input[type="file"] {
+  width: 100%;
+  padding: .7rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+textarea { min-height: 8rem; }
+
+.check { display: flex; gap: .5rem; font-weight: 400; }
+
+button {
+  margin-top: 1rem;
+  padding: .8rem 1.4rem;
+  background: var(--button);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font: 600 1rem system-ui, sans-serif;
+  cursor: pointer;
+}
+button:disabled { opacity: .6; cursor: wait; }
+
+/* Hidden until there is an answer. pre-wrap keeps the line breaks. */
+#out { display: none; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); white-space: pre-wrap; }
+
+footer { color: var(--muted); font-size: .9rem; }
