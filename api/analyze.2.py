@@ -87,12 +87,16 @@ class handler(BaseHTTPRequestHandler):
             "system": INSTRUCTIONS,
             "messages": [{"role": "user", "content": content}],
         }
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        if not api_key:
+            print("ANTHROPIC_API_KEY is not set")
+            return self.reply(500, {"error": "The server is missing its API key."})
         request = urllib.request.Request(
             "https://api.anthropic.com/v1/messages",
             data=json.dumps(payload).encode("utf-8"),
             headers={
                 "content-type": "application/json",
-                "x-api-key": os.environ.get("ANTHROPIC_API_KEY", ""),  # your secret key, set in Vercel
+                "x-api-key": api_key,  # your secret key, set in Vercel
                 "anthropic-version": "2023-06-01",
             },
             method="POST",
@@ -100,7 +104,12 @@ class handler(BaseHTTPRequestHandler):
         try:
             with urllib.request.urlopen(request, timeout=60) as response:
                 result = json.load(response)
-        except (urllib.error.URLError, TimeoutError):
+        except urllib.error.HTTPError as e:
+            # The API answered with an error. Details go to the Vercel logs.
+            print("Anthropic API error", e.code, e.read().decode("utf-8", "ignore"))
+            return self.reply(502, {"error": "The analysis service returned an error (code %d). Please try again." % e.code})
+        except (urllib.error.URLError, TimeoutError) as e:
+            print("Network error", e)
             return self.reply(502, {"error": "The analysis service is unavailable. Please try again."})
 
         answer = "".join(b.get("text", "") for b in result.get("content", []) if b.get("type") == "text")
