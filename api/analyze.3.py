@@ -109,8 +109,10 @@ class handler(BaseHTTPRequestHandler):
             print("Anthropic API error", e.code, e.read().decode("utf-8", "ignore"))
             return self.reply(502, {"error": "The analysis service returned an error (code %d). Please try again." % e.code})
         except (urllib.error.URLError, TimeoutError) as e:
-            print("Network error", e)
-            return self.reply(502, {"error": "The analysis service is unavailable. Please try again."})
+            # Could not reach the API at all (connection, DNS, SSL or timeout)
+            reason = str(getattr(e, "reason", e))[:120]
+            print("Network error", reason)
+            return self.reply(502, {"error": "The analysis service is unavailable (%s). Please try again." % reason})
 
         answer = "".join(b.get("text", "") for b in result.get("content", []) if b.get("type") == "text")
         self.reply(200, {"text": answer})
