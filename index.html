@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MediPredictAI – Understand your symptoms and medical reports</title>
+<title>MediPredictAI – Gallstone symptom and report checker</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🩺%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,19 +96,19 @@ footer p{margin:0 0 .75rem}
 <main id="top">
 <div class="hero"><div class="wrap">
 <div>
-<h1>Make sense of your symptoms and medical reports.</h1>
-<p class="lead">Describe what you’re feeling or upload a report. MediPredictAI explains what it could mean, how long recovery usually takes, and when to see a doctor.</p>
+<h1>Understand gallstone symptoms and reports.</h1>
+<p class="lead">Describe your symptoms or upload an ultrasound or blood test report. MediPredictAI explains which gallstone-related conditions could fit, how long recovery usually takes, and when to see a doctor.</p>
 <div class="btns"><a class="btn" href="#tool">Check my symptoms</a><a class="btn alt" href="#how">See how it works</a></div>
-<ul class="trust"><li>Plain language</li><li>Safety guidance in every answer</li><li>Not saved by this page</li></ul>
+<ul class="trust"><li>Focused on gallstones</li><li>Plain language</li><li>Safety guidance in every answer</li></ul>
 </div>
 
 <div class="card" id="tool">
-<h2>Tell us what’s going on</h2>
-<p class="alert">In an emergency such as chest pain, trouble breathing, stroke signs or thoughts of self-harm, call your local emergency number now. Don’t use this tool.</p>
+<h2>Tell us about your symptoms</h2>
+<p class="alert">If you have severe or constant belly pain, fever with chills, yellow skin or eyes, chest pain or trouble breathing, call your local emergency number now. Don’t use this tool.</p>
 <label for="sym">Symptoms or questions</label>
-<textarea id="sym" placeholder="Example: Sore throat and fever of 38.5 °C for 2 days, no cough. I’m 29 and otherwise healthy."></textarea>
-<p class="hint">Include age, how long it has lasted, and any medicines or conditions.</p>
-<label for="file">Medical report (optional)</label>
+<textarea id="sym" placeholder="Example: Pain in the upper right belly after fatty meals for 2 days, with nausea, no fever. I’m 38."></textarea>
+<p class="hint">Include your age, where the pain is and when it happens, how long it has lasted, and any fever, vomiting, or yellow skin or eyes.</p>
+<label for="file">Report (optional): ultrasound, CT or liver blood tests</label>
 <input id="file" type="file" accept="image/*,.txt,.csv,text/plain">
 <p class="hint">Photos or screenshots of reports and text files work. For a PDF, paste the text above.</p>
 <label class="ck"><input id="ok" type="checkbox"> I understand this is general information, not medical advice.</label>
@@ -119,11 +119,11 @@ footer p{margin:0 0 .75rem}
 
 <section class="block" id="features"><div class="wrap">
 <h2 class="t">What MediPredictAI helps with</h2>
-<p class="sub">Health information is hard to read when you’re worried. MediPredictAI turns it into something you can act on.</p>
+<p class="sub">Gallstone problems can be confusing and worrying. MediPredictAI turns them into something you can act on.</p>
 <div class="feat">
-<div><h3>Symptom check</h3><p>Describe how you feel and see likely explanations, ranked, with what points to each one.</p></div>
-<div><h3>Report explainer</h3><p>Upload a lab result or report and get each abnormal value explained in plain language.</p></div>
-<div><h3>Recovery timeline</h3><p>Get realistic ranges for how long an illness or injury usually takes to heal, and what slows it down.</p></div>
+<div><h3>Symptom check</h3><p>Describe your pain and symptoms and see which gallstone-related conditions could fit, most likely first.</p></div>
+<div><h3>Report explainer</h3><p>Upload an ultrasound, CT or liver blood test report and get the findings that matter for gallstones explained in plain language.</p></div>
+<div><h3>Recovery timeline</h3><p>Get typical ranges for how long attacks, infections or recovery after gallbladder surgery usually take.</p></div>
 <div><h3>Doctor visit prep</h3><p>Know which signs mean see a doctor soon, and which mean get emergency care now.</p></div>
 </div>
 </div></section>
@@ -142,8 +142,9 @@ footer p{margin:0 0 .75rem}
 <h2 class="t">Questions people ask</h2>
 <p class="sub">Straight answers about what this tool is and isn’t.</p>
 <div class="faq">
+<details><summary>Does it cover other conditions?</summary><p>No. It only covers gallstones and related gallbladder and bile duct problems. For anything else, please see a doctor.</p></details>
 <details><summary>Can MediPredictAI diagnose me?</summary><p>No. It gives general information and possible explanations, which can be wrong. Only a clinician who examines you can diagnose a condition.</p></details>
-<details><summary>What happens to what I submit?</summary><p>Your text and files are sent to an AI model to write your answer. This page doesn’t save them. Avoid sharing your full name, ID numbers or other identifying details.</p></details>
+<details><summary>What happens to what I submit?</summary><p>Your text and files are sent to a third-party AI service to write your answer. This page doesn’t save them, but that service may keep or use them, so avoid sharing your name, ID numbers or other identifying details.</p></details>
 <details><summary>Which reports can I upload?</summary><p>Photos or screenshots of reports, and plain text files. PDFs aren’t supported yet, so paste the text into the symptoms box instead.</p></details>
 <details><summary>When should I see a doctor instead?</summary><p>If symptoms are severe, getting worse, or lasting longer than expected, see a doctor. For emergencies, call your local emergency number immediately.</p></details>
 </div>
@@ -156,7 +157,7 @@ footer p{margin:0 0 .75rem}
 </main>
 
 <footer><div class="wrap">
-<div><a class="brand" href="#top" style="margin:0 0 .4rem">MediPredictAI</a><p>Health information, explained.</p></div>
+<div><a class="brand" href="#top" style="margin:0 0 .4rem">MediPredictAI</a><p>Gallstone information, explained.</p></div>
 <div>
 <p><a href="#features">What it does</a><a href="#how">How it works</a><a href="#faq">FAQ</a></p>
 <p>MediPredictAI provides general health information, not medical advice, diagnosis or treatment. Always talk to a qualified professional about your health, and call emergency services if you think you’re in danger.</p>
