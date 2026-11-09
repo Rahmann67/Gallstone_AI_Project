@@ -1,5 +1,6 @@
 # Runs on the server, never in the visitor's browser.
 # That is why your secret API key is safe here.
+# This version uses Google's Gemini API (free tier) instead of Anthropic.
 # Uses only Python's built-in libraries, so nothing extra needs installing.
 
 import json
@@ -21,7 +22,7 @@ begin with a clear instruction to contact local emergency services or a crisis l
 For lab or report values, explain what each abnormal value usually means and which matter most.
 Keep it under 350 words. Finish with one line saying this is general information, not medical advice."""
 
-# Remembers when each visitor made requests (basic protection for your bill)
+# Remembers when each visitor made requests (basic protection against overuse)
 request_log = {}
 
 
@@ -66,47 +67,46 @@ class handler(BaseHTTPRequestHandler):
         if not text.strip() and not report_text.strip() and not image:
             return self.reply(400, {"error": "Add your symptoms or a report first."})
 
-        # Build the message for the AI (photo first, then the text)
-        content = []
-        if image:
-            content.append({
-                "type": "image",
-                "source": {"type": "base64", "media_type": "image/jpeg", "data": image},
-            })
+        # Your free Gemini key, set in Vercel's Environment Variables
+        api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        if not api_key:
+            print("GEMINI_API_KEY is not set")
+            return self.reply(500, {"error": "The server is missing its API key."})
+        # The model can be changed in Vercel without touching the code
+        model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash").strip()
+
+        # Build the message for the AI (text first, then the photo if there is one)
         message = "Symptoms and context from the visitor:\n" + (text or "(none given)")
         if report_text:
             message += "\n\nReport text:\n" + report_text
         if image:
             message += "\n\nA photo of a report is attached."
-        content.append({"type": "text", "text": message})
+        parts = [{"text": message}]
+        if image:
+            parts.append({"inline_data": {"mime_type": "image/jpeg", "data": image}})
 
-        # Ask the Anthropic API and send the answer back to the page
         payload = {
-            "model": "claude-sonnet-5-5",
-            "max_tokens": 900,
-            "system": INSTRUCTIONS,
-            "messages": [{"role": "user", "content": content}],
+            "system_instruction": {"parts": [{"text": INSTRUCTIONS}]},
+            "contents": [{"role": "user", "parts": parts}],
+            # Generous limit so the model's internal thinking never cuts the answer short
+            "generationConfig": {"maxOutputTokens": 4096},
         }
-        api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
-        if not api_key:
-            print("ANTHROPIC_API_KEY is not set")
-            return self.reply(500, {"error": "The server is missing its API key."})
         request = urllib.request.Request(
-            "https://api.anthropic.com/v1/messages",
+            "https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent" % model,
             data=json.dumps(payload).encode("utf-8"),
-            headers={
-                "content-type": "application/json",
-                "x-api-key": api_key,  # your secret key, set in Vercel
-                "anthropic-version": "2023-06-01",
-            },
+            headers={"Content-Type": "application/json", "x-goog-api-key": api_key},
             method="POST",
         )
+
+        # Ask the Gemini API and send the answer back to the page
         try:
             with urllib.request.urlopen(request, timeout=60) as response:
                 result = json.load(response)
         except urllib.error.HTTPError as e:
             # The API answered with an error. Details go to the Vercel logs.
-            print("Anthropic API error", e.code, e.read().decode("utf-8", "ignore"))
+            print("Gemini API error", e.code, e.read().decode("utf-8", "ignore"))
+            if e.code == 429:
+                return self.reply(502, {"error": "The free service is busy right now. Please wait a minute and try again."})
             return self.reply(502, {"error": "The analysis service returned an error (code %d). Please try again." % e.code})
         except (urllib.error.URLError, TimeoutError) as e:
             # Could not reach the API at all (connection, DNS, SSL or timeout)
@@ -114,5 +114,12 @@ class handler(BaseHTTPRequestHandler):
             print("Network error", reason)
             return self.reply(502, {"error": "The analysis service is unavailable (%s). Please try again." % reason})
 
-        answer = "".join(b.get("text", "") for b in result.get("content", []) if b.get("type") == "text")
+        # Pull the text out of Gemini's reply
+        answer = ""
+        for candidate in result.get("candidates", [])[:1]:
+            for part in candidate.get("content", {}).get("parts", []):
+                answer += part.get("text", "")
+        if not answer.strip():
+            print("Empty answer", json.dumps(result)[:500])
+            return self.reply(502, {"error": "No answer could be produced for that input. Try rewording it."})
         self.reply(200, {"text": answer})
